@@ -103,9 +103,9 @@ services:
 
   db-migration:
     entrypoint: ["python"]
+    image: "rasa/rasa-x:${RASA_X_VERSION}"
     command: ["-m", "rasax.community.services.db_migration_service"]
     restart: always
-    image: "rasa/rasa-x:${RASA_X_VERSION}"
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:8000/health || kill 1"]
       interval: 5s
@@ -153,10 +153,10 @@ services:
     expose:
       - "5432"
     environment:
-      POSTGRESQL_USERNAME: "${DB_USER:-admin}"
+      POSTGRESQL_USERNAME: "${DB_USER}"
       POSTGRESQL_PASSWORD: "${DB_PASSWORD}"
-      POSTGRESQL_DATABASE: "${DB_DATABASE:-rasa}"
-    volumes:
+      POSTGRESQL_DATABASE: "${DB_DATABASE}"
+      volumes:
       - ./db:/bitnami/postgresql
 
   rabbit:

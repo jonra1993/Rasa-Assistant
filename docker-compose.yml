@@ -1,4 +1,4 @@
-version: "3.9"
+version: "3.4"
 
 networks:
   custom-network:
@@ -7,9 +7,9 @@ networks:
 x-database-credentials: &database-credentials
   DB_HOST: "db"
   DB_PORT: "5432"
-  DB_USER: "${POSTGRESQL_USERNAME}"
-  DB_PASSWORD: "${POSTGRESQL_PASSWORD}"
-  DB_LOGIN_DB: "${POSTGRESQL_DATABASE}"
+  DB_USER: "${DB_USER:-admin}"
+  DB_PASSWORD: "${DB_PASSWORD}"
+  DB_LOGIN_DB: "${DB_LOGIN_DB:-rasa}"
 
 x-rabbitmq-credentials: &rabbitmq-credentials
   RABBITMQ_HOST: "rabbit"
@@ -34,8 +34,8 @@ x-nginx-host-variables: &nginx-host-variables
 
 x-rasax-credentials: &rasax-credentials
   RASA_X_HOST: "http://rasa-x:5002"
-  RASA_X_USERNAME: ${RASA_X_USERNAME}
-  RASA_X_PASSWORD: ${RASA_X_PASSWORD}
+  RASA_X_USERNAME: ${RASA_X_USERNAME:-admin}
+  RASA_X_PASSWORD: ${RASA_X_PASSWORD:-}
   RASA_X_TOKEN: ${RASA_X_TOKEN}
   JWT_SECRET: ${JWT_SECRET}
   RASA_USER_APP: "http://app-rasa-x-demo:5055"
@@ -52,7 +52,7 @@ x-rasa-credentials: &rasa-credentials
   RASA_TOKEN: ${RASA_TOKEN}
   RASA_MODEL_PULL_INTERVAL: 10
   RABBITMQ_QUEUE: "rasa_production_events"
-  RASA_TELEMETRY_ENABLED: ${RASA_TELEMETRY_ENABLED}
+  RASA_TELEMETRY_ENABLED: ${RASA_TELEMETRY_ENABLED:-true}
       
 x-rasa-services: &default-rasa-service
   restart: always
@@ -85,7 +85,11 @@ services:
     restart: always
     image: "rasa/rasa-x:${RASA_X_VERSION}"
     expose:
-      - "5002"    
+      - "5002"  
+    links:
+      - db:db    
+    networks:
+      - custom-network          
     volumes:
       - ./models:/app/models
       - ./environments.yml:/app/environments.yml
@@ -97,7 +101,7 @@ services:
       <<: *database-credentials
       <<: *rasa-credentials
       SELF_PORT: "5002"
-      DB_DATABASE: "${POSTGRESQL_DATABASE}"
+      DB_DATABASE: "${DB_DATABASE:-rasa}"
       RASA_MODEL_DIR: "/app/models"
       PASSWORD_SALT: ${PASSWORD_SALT}
       RABBITMQ_QUEUE: "rasa_production_events"
@@ -121,6 +125,8 @@ services:
       start_period: 2s
     expose:
       - "8000"     
+    networks:
+      - custom-network      
     environment:
       <<: *database-credentials
       RUN_DATABASE_MIGRATION_AS_SEPARATE_SERVICE: "true"
@@ -131,6 +137,8 @@ services:
   #Environment corresponding to rasa server for infrencing https://rasa.com/docs/rasa-x/enterprise/deployment-environments/
   rasa-production:
     container_name: rasa-production
+    networks:
+      - custom-network    
     <<: *default-rasa-service    
     environment:
       <<: *rasa-credentials
@@ -142,6 +150,8 @@ services:
   #Environment corresponding to rasa server for training
   rasa-worker:
     container_name: rasa-worker
+    networks:
+      - custom-network    
     <<: *default-rasa-service    
     environment:
       <<: *rasa-credentials
@@ -155,9 +165,9 @@ services:
     restart: always
     image: "rasa/rasa-x-demo:${RASA_X_DEMO_VERSION}"
     expose:
-      - "5055"
-    ports:
-      - "5055:5055"        
+      - "5055"    
+    networks:
+      - custom-network            
     depends_on:
       - rasa-production      
 
@@ -170,9 +180,9 @@ services:
     expose:
       - "5432"    
     environment:
-      POSTGRESQL_USERNAME: "${POSTGRESQL_USERNAME}"
-      POSTGRESQL_PASSWORD: "${POSTGRESQL_PASSWORD}"
-      POSTGRESQL_DATABASE: "${POSTGRESQL_DATABASE}"
+      POSTGRESQL_USERNAME: "${DB_USER}"
+      POSTGRESQL_PASSWORD: "${DB_PASSWORD}"
+      POSTGRESQL_DATABASE: "${DB_DATABASE}"
     volumes:
       - ./db:/bitnami/postgresql
 
@@ -201,9 +211,9 @@ services:
       RABBITMQ_HOST: "rabbit"
       RABBITMQ_USERNAME: ${RABBITMQ_USERNAME}
       RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
-      RABBITMQ_DISK_FREE_LIMIT: "{mem_relative, 0.1}"
+      RABBITMQ_DISK_FREE_RELATIVE_LIMIT: "0.1"
     expose:
-      - "5672"      
+      - "5672"     
 
   duckling:
     container_name: duckling
@@ -225,26 +235,26 @@ services:
       REDIS_PASSWORD: ${REDIS_PASSWORD}
     expose:
       - "6379"
-            
+  
   nginx:
     container_name: nginx
     restart: always
-    image: "nginx:${NGINX_VERSION}"
-    networks:
-      - custom-network
+    image: "nginx:${NGINX_VERSION}"  
     ports:
       - "80:8080"
+      - "443:8443"
     volumes:
-    #   - ./certs:/etc/certs
-      - ./nginx-config-files/nginx.conf:/etc/nginx/nginx.conf    
-      - ./nginx-config-files/rasax.nginx:/etc/nginx/conf.d/rasax.nginx 
-      - ./nginx-config-files/ssl.conf:/etc/nginx/conf.d/ssl.conf
+      - ./certs:/etc/certs
+      - ./nginx-config-files/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx-config-files/ssl.conf.template:/etc/nginx/templates/ssl.conf.template
+      - ./nginx-config-files/rasax.nginx.template:/etc/nginx/templates/rasax.nginx.template
     environment:
-      <<: *nginx-host-variables      
+      <<: *nginx-host-variables
     depends_on:
       - rasa-x
       - rasa-production
       - app-rasa-x-demo      
+
 
   # ubuntu-server:
   #   container_name: ubuntu-server-container
