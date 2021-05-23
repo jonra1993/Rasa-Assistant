@@ -23,6 +23,7 @@ cache:
    port: ${REDIS_PORT}
    password: ${REDIS_PASSWORD}
    db: ${REDIS_CACHE_DB}
+   key_prefix: "rasax_cache"
 event_broker:
    type: "pika"
    url: ${RABBITMQ_HOST}

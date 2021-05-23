@@ -1,7 +1,7 @@
 rasa:
    production:
-      url: http://rasa-production:5005
+      url: ${RASA_PRODUCTION_HOST}
       token: ${RASA_TOKEN}
    worker:
-      url: http://rasa-worker:5005
+      url: ${RASA_WORKER_HOST}
       token: ${RASA_TOKEN}
