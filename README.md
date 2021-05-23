@@ -28,3 +28,9 @@ https://storage.googleapis.com/rasa-x-releases/0.40.0a2/nginx-config-files/ssl.c
 
 sudo python3 rasa_x_commands.py create admin me MySecurePass
 sudo python3 rasa_x_commands.py create --update admin me MySecurePass
+
+
+## Ansible
+
+sudo ansible-galaxy install geerlingguy.docker
+sudo ansible-playbook -i "localhost," -c local rasa_x_playbook.yml
