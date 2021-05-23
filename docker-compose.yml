@@ -1,15 +1,11 @@
-version: "3.4"
-
-networks:
-  custom-network:
-    driver: bridge
+version: "3.9"
 
 x-database-credentials: &database-credentials
-  DB_HOST: "db"
+  DB_HOST: "${DB_HOST}"
   DB_PORT: "5432"
-  DB_USER: "${DB_USER:-admin}"
+  DB_USER: "${DB_USER}"
   DB_PASSWORD: "${DB_PASSWORD}"
-  DB_LOGIN_DB: "${DB_LOGIN_DB:-rasa}"
+  DB_LOGIN_DB: "${DB_LOGIN_DB}"
 
 x-rabbitmq-credentials: &rabbitmq-credentials
   RABBITMQ_HOST: "rabbit"
@@ -34,8 +30,8 @@ x-nginx-host-variables: &nginx-host-variables
 
 x-rasax-credentials: &rasax-credentials
   RASA_X_HOST: "http://rasa-x:5002"
-  RASA_X_USERNAME: ${RASA_X_USERNAME:-admin}
-  RASA_X_PASSWORD: ${RASA_X_PASSWORD:-}
+  RASA_X_USERNAME: ${RASA_X_USERNAME}
+  RASA_X_PASSWORD: ${RASA_X_PASSWORD}
   RASA_X_TOKEN: ${RASA_X_TOKEN}
   JWT_SECRET: ${JWT_SECRET}
   RASA_USER_APP: "http://app-rasa-x-demo:5055"
@@ -52,7 +48,7 @@ x-rasa-credentials: &rasa-credentials
   RASA_TOKEN: ${RASA_TOKEN}
   RASA_MODEL_PULL_INTERVAL: 10
   RABBITMQ_QUEUE: "rasa_production_events"
-  RASA_TELEMETRY_ENABLED: ${RASA_TELEMETRY_ENABLED:-true}
+  RASA_TELEMETRY_ENABLED: ${RASA_TELEMETRY_ENABLED}
       
 x-rasa-services: &default-rasa-service
   restart: always
@@ -85,11 +81,7 @@ services:
     restart: always
     image: "rasa/rasa-x:${RASA_X_VERSION}"
     expose:
-      - "5002"  
-    links:
-      - db:db    
-    networks:
-      - custom-network          
+      - "5002"               
     volumes:
       - ./models:/app/models
       - ./environments.yml:/app/environments.yml
@@ -101,7 +93,7 @@ services:
       <<: *database-credentials
       <<: *rasa-credentials
       SELF_PORT: "5002"
-      DB_DATABASE: "${DB_DATABASE:-rasa}"
+      DB_DATABASE: "${DB_DATABASE}"
       RASA_MODEL_DIR: "/app/models"
       PASSWORD_SALT: ${PASSWORD_SALT}
       RABBITMQ_QUEUE: "rasa_production_events"
@@ -124,9 +116,7 @@ services:
       retries: 3
       start_period: 2s
     expose:
-      - "8000"     
-    networks:
-      - custom-network      
+      - "8000"             
     environment:
       <<: *database-credentials
       RUN_DATABASE_MIGRATION_AS_SEPARATE_SERVICE: "true"
@@ -136,9 +126,7 @@ services:
 
   #Environment corresponding to rasa server for infrencing https://rasa.com/docs/rasa-x/enterprise/deployment-environments/
   rasa-production:
-    container_name: rasa-production
-    networks:
-      - custom-network    
+    container_name: rasa-production 
     <<: *default-rasa-service    
     environment:
       <<: *rasa-credentials
@@ -149,9 +137,7 @@ services:
 
   #Environment corresponding to rasa server for training
   rasa-worker:
-    container_name: rasa-worker
-    networks:
-      - custom-network    
+    container_name: rasa-worker      
     <<: *default-rasa-service    
     environment:
       <<: *rasa-credentials
@@ -165,21 +151,18 @@ services:
     restart: always
     image: "rasa/rasa-x-demo:${RASA_X_DEMO_VERSION}"
     expose:
-      - "5055"    
-    networks:
-      - custom-network            
+      - "5055"                   
     depends_on:
       - rasa-production      
 
   db:
     container_name: db
     restart: always
-    image: "bitnami/postgresql:${POSTGRESQL_VERSION}"
-    networks:
-      - custom-network
+    image: "bitnami/postgresql:${POSTGRESQL_VERSION}"    
     expose:
       - "5432"    
     environment:
+      POSTGRES_HOST_AUTH_METHOD: "trust"
       POSTGRESQL_USERNAME: "${DB_USER}"
       POSTGRESQL_PASSWORD: "${DB_PASSWORD}"
       POSTGRESQL_DATABASE: "${DB_DATABASE}"
@@ -190,9 +173,7 @@ services:
   pgadmin4:
     container_name: pgadmin4
     restart: always
-    image: "dpage/pgadmin4:5.3"
-    networks:
-      - custom-network
+    image: "dpage/pgadmin4:5.3"    
     ports:
       - "5050:80"  
     depends_on:
@@ -204,9 +185,7 @@ services:
   rabbit:
     container_name: rabbit
     restart: always
-    image: "bitnami/rabbitmq:${RABBITMQ_VERSION}"
-    networks:
-      - custom-network
+    image: "bitnami/rabbitmq:${RABBITMQ_VERSION}"    
     environment:
       RABBITMQ_HOST: "rabbit"
       RABBITMQ_USERNAME: ${RABBITMQ_USERNAME}
@@ -219,8 +198,6 @@ services:
     container_name: duckling
     restart: always
     image: "rasa/duckling:${RASA_DUCKLING_VERSION}"
-    networks:
-      - custom-network
     expose:
       - "8000"        
     command: ["duckling-example-exe", "--no-access-log", "--no-error-log"]
@@ -228,9 +205,7 @@ services:
   redis:
     container_name: redis
     restart: always
-    image: "bitnami/redis:${REDIS_VERSION}"
-    networks:
-      - custom-network
+    image: "bitnami/redis:${REDIS_VERSION}"    
     environment:
       REDIS_PASSWORD: ${REDIS_PASSWORD}
     expose:
@@ -262,8 +237,6 @@ services:
   #     context: .    #/path/to/Dockerfile/dir
   #     dockerfile: Dockerfile
   #   restart: always
-  #   command: ['tail', '-f', '/dev/null']   #Dummy command to keep container running
-  #   networks:
-  #     - custom-network   
+  #   command: ['tail', '-f', '/dev/null']   #Dummy command to keep container running   
   #   volumes:
   #     - ./ubuntu:/home    
