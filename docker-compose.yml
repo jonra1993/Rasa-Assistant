@@ -230,13 +230,4 @@ services:
       - rasa-production
       - app-rasa-x-demo      
 
-
-  # ubuntu-server:
-  #   container_name: ubuntu-server-container
-  #   build: 
-  #     context: .    #/path/to/Dockerfile/dir
-  #     dockerfile: Dockerfile
-  #   restart: always
-  #   command: ['tail', '-f', '/dev/null']   #Dummy command to keep container running   
-  #   volumes:
-  #     - ./ubuntu:/home    
+   
