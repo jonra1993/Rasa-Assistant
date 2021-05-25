@@ -4,8 +4,13 @@
  cheatsheet-> https://devhints.io/docker-compose
  docker -> https://devhints.io/docker
 # Docker-compose commands
-docker-compose build
-docker-compose up -d
+step1: docker-compose up -d
+on a new temrinal: : sudo python3 rasa_x_commands.py create admin me MySecurePass
+
+if that does not work: sudo python3 rasa_x_commands.py create --update admin me MySecurePass
+
+
+step3: open localhost and enter password
 
 
 docker exec -it ubuntu-server-container bash
@@ -34,3 +39,7 @@ sudo python3 rasa_x_commands.py create --update admin me MySecurePass
 
 sudo ansible-galaxy install geerlingguy.docker
 sudo ansible-playbook -i "localhost," -c local rasa_x_playbook.yml
+
+
+
+./ngrok http 80

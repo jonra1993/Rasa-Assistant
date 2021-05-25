@@ -77,7 +77,7 @@ x-rasa-services: &default-rasa-service
 services:     
 
   rasa-x:
-    container_name: rasa-x
+    #container_name: rasa-x
     restart: always
     image: "rasa/rasa-x:${RASA_X_VERSION}"
     expose:
@@ -104,7 +104,7 @@ services:
       - db
 
   db-migration:
-    container_name: db-migration
+    #container_name: db-migration
     restart: always
     image: "rasa/rasa-x:${RASA_X_VERSION}"
     entrypoint: ["python"]
@@ -126,7 +126,7 @@ services:
 
   #Environment corresponding to rasa server for infrencing https://rasa.com/docs/rasa-x/enterprise/deployment-environments/
   rasa-production:
-    container_name: rasa-production 
+    #container_name: rasa-production 
     <<: *default-rasa-service    
     environment:
       <<: *rasa-credentials
@@ -137,7 +137,7 @@ services:
 
   #Environment corresponding to rasa server for training
   rasa-worker:
-    container_name: rasa-worker      
+    #container_name: rasa-worker      
     <<: *default-rasa-service    
     environment:
       <<: *rasa-credentials
@@ -147,7 +147,7 @@ services:
       RASA_MODEL_SERVER: "http://rasa-x:5002/api/projects/default/models/tags/production"
   
   app-rasa-x-demo:
-    container_name: app-rasa-x-demo
+    #container_name: app-rasa-x-demo
     restart: always
     image: "rasa/rasa-x-demo:${RASA_X_DEMO_VERSION}"
     expose:
@@ -156,7 +156,7 @@ services:
       - rasa-production      
 
   db:
-    container_name: db
+    #container_name: db
     restart: always
     image: "bitnami/postgresql:${POSTGRESQL_VERSION}"    
     expose:
@@ -171,7 +171,7 @@ services:
 
 
   pgadmin4:
-    container_name: pgadmin4
+    #container_name: pgadmin4
     restart: always
     image: "dpage/pgadmin4:5.3"    
     ports:
@@ -183,7 +183,7 @@ services:
       PGADMIN_DEFAULT_PASSWORD: "${PGADMIN_DEFAULT_PASSWORD}"
 
   rabbit:
-    container_name: rabbit
+    #container_name: rabbit
     restart: always
     image: "bitnami/rabbitmq:${RABBITMQ_VERSION}"    
     environment:
@@ -195,7 +195,7 @@ services:
       - "5672"     
 
   duckling:
-    container_name: duckling
+    #container_name: duckling
     restart: always
     image: "rasa/duckling:${RASA_DUCKLING_VERSION}"
     expose:
@@ -203,7 +203,7 @@ services:
     command: ["duckling-example-exe", "--no-access-log", "--no-error-log"]
 
   redis:
-    container_name: redis
+    #container_name: redis
     restart: always
     image: "bitnami/redis:${REDIS_VERSION}"    
     environment:
@@ -212,7 +212,7 @@ services:
       - "6379"
   
   nginx:
-    container_name: nginx
+    #container_name: nginx
     restart: always
     image: "nginx:${NGINX_VERSION}"  
     ports:
