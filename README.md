@@ -1,45 +1,50 @@
 # Rasa-Assistant
 
+## Setup
 
- cheatsheet-> https://devhints.io/docker-compose
- docker -> https://devhints.io/docker
-# Docker-compose commands
-step1: docker-compose up -d
-on a new temrinal: : sudo python3 rasa_x_commands.py create admin me MySecurePass
+### Python setup
+Currently this projects just work using **python 3.7** so It is recommend that make sure you have this python version. To check run on command line:
+```
+python3 --version
+```
 
-if that does not work: sudo python3 rasa_x_commands.py create --update admin me MySecurePass
-
-
-step3: open localhost and enter password
+If you do not have the correct version, please download it from [here](http:/https://www.python.org/downloads// "here")
 
 
-docker exec -it ubuntu-server-container bash
+### Installation
+The following commands helps to install python packages needed to make this project run correctly locally.
+```
+pip3 install poetry
+https://github.com/jonra1993/Rasa-Assistant.git
+cd Rasa-Assistant
+```
 
-# Connect PostgreSQL database using pgadmin
-https://towardsdatascience.com/how-to-run-postgresql-and-pgadmin-using-docker-3a6a8ae918b5
+#### Package setup using poetry
+```
+poetry shell
+poetry install
+python3 rasa train
+```
 
-host: db_container_name
-port: 5432
-username: 
-password: 
+## Development
 
+### Activate ngrok to serve on https
+In order to make this example to test, please use ngrok. You can setup ngrok in you pc from [here](https://ngrok.com/ "here").
 
-# Download config files 
-https://storage.googleapis.com/rasa-x-releases/0.40.0a2/nginx-config-files/rasax.nginx.template
-https://storage.googleapis.com/rasa-x-releases/0.40.0a2/nginx-config-files/nginx.conf
-https://storage.googleapis.com/rasa-x-releases/0.40.0a2/nginx-config-files/ssl.conf.template
+Run on console the following command. It will expose 5005 local port on internet.
+```
+./ngrok http 5005
+```
 
+### Start project
+Run on console the following command. It will start project on port 5005
+```
+poetry shell
+rasa shell
+rasa run --enable-api --cors "*"
+```
 
-
-sudo python3 rasa_x_commands.py create admin me MySecurePass
-sudo python3 rasa_x_commands.py create --update admin me MySecurePass
-
-
-## Ansible
-
-sudo ansible-galaxy install geerlingguy.docker
-sudo ansible-playbook -i "localhost," -c local rasa_x_playbook.yml
-
-
-
-./ngrok http 80
+## Extras
+- [Rasa API](https://rasa.com/docs/rasa/pages/http-apihttp:// "Rasa API")
+- [Poetry Manager](https://hackersandslackers.com/python-poetry-package-manager/ "Poetry Manager")
+- [Poetry doc](https://python-poetry.org/docs/cli/ "Poetry doc")

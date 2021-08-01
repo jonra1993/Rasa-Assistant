@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "Rasa-Assistant"
+version = "0.1.0"
+description = ""
+authors = ["Jona <jonathan.vargas1104@gmail.com>"]
+readme = "README.md"
+license = "Apache-2.0"
+
+[tool.black]
+line-length = 88
+target-version = [ "py37", "py38",]
+exclude = "((.eggs | .git | .pytest_cache | build | dist))"
+
+[tool.poetry.dependencies]
+python = ">=3.7,<3.9"
+rasa = "^2.8.1"
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.2"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
