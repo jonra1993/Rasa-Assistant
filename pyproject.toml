@@ -13,7 +13,7 @@ exclude = "((.eggs | .git | .pytest_cache | build | dist))"
 
 [tool.poetry.dependencies]
 python = ">=3.7,<3.9"
-rasa = "^2.8.1"
+rasa = {extras = ["full"], version = "^2.8.12"}
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
