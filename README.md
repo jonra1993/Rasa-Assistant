@@ -23,6 +23,8 @@ cd Rasa-Assistant
 ```
 poetry shell
 poetry install
+poetry add "rasa[full]"
+poetry add https://pypi.rasa.com/api/package/rasa-x/rasa_x-0.42.5-py3-none-any.whl
 python3 rasa train
 ```
 

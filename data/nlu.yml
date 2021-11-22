@@ -3,62 +3,90 @@ version: "2.0"
 nlu:
 - intent: greet
   examples: |
-    - hola    
-    - cómo estás
-    - como estas
-    - buenos días
-    - buenas tardes
-    - buenas noches
-    - que tal
-    - hola tu
+    - hey
+    - hello
+    - hi
+    - hello there
+    - good morning
+    - good evening
+    - moin
+    - hey there
+    - let's go
+    - hey dude
+    - goodmorning
+    - goodevening
+    - good afternoon
 
 - intent: goodbye
   examples: |
-    - chao
-    - adios
-    - hasta mañana
-    - te veo luego    
+    - good afternoon
+    - cu
+    - good by
+    - cee you later
+    - good night
+    - bye
+    - goodbye
+    - have a nice day
+    - see you around
+    - bye bye
+    - see you later
 
 - intent: affirm
   examples: |
-    - si
+    - yes
     - y
-    - ok
-    - claro
-    - correcto
-    - por supusto
-    - suena bien    
+    - indeed
+    - of course
+    - that sounds good
+    - correct
 
 - intent: deny
   examples: |
     - no
     - n
-    - nunca    
+    - never
+    - I don't think so
+    - don't like that
+    - no way
+    - not really
 
 - intent: mood_great
   examples: |
-    - perfecto
-    - bien
-    - asombroso
-    - suena bien
-    - maravilloso
-    - me siento bien
-    - me siento asombroso
-    - me siento bien
-    - estoy bien
-    - estoy asombroso
-    - muy bien    
+    - perfect
+    - great
+    - amazing
+    - feeling like a king
+    - wonderful
+    - I am feeling very good
+    - I am great
+    - I am amazing
+    - I am going to save the world
+    - super stoked
+    - extremely good
+    - so so perfect
+    - so good
+    - so perfect
 
 - intent: mood_unhappy
   examples: |
-    - mi día fue terrible
-    - estoy triste
-    - no me siento bien
-    - estoy mal
-    - triste
-    - muy triste    
+    - my day was horrible
+    - I am sad
+    - I don't feel very well
+    - I am disappointed
+    - super sad
+    - I'm so sad
+    - sad
+    - very sad
+    - unhappy
+    - not good
+    - not very good
+    - extremly sad
+    - so saad
+    - so sad
 
 - intent: bot_challenge
   examples: |
-    - eres un robot?
-    - eres un humano?    
+    - are you a bot?
+    - are you a human?
+    - am I talking to a bot?
+    - am I talking to a human?
