@@ -23,11 +23,19 @@ x-redis-credentials: &redis-credentials
 x-duckling-credentials: &duckling-credentials
   RASA_DUCKLING_HTTP_URL: "http://duckling:8000"
 
+x-s3-credentials: &s3-credentials
+  AWS_SECRET_ACCESS_KEY: "${AWS_SECRET_ACCESS_KEY}"
+  AWS_ACCESS_KEY_ID: "${AWS_ACCESS_KEY_ID}"
+  AWS_DEFAULT_REGION: "${AWS_DEFAULT_REGION}"
+  BUCKET_NAME: "${BUCKET_NAME}"
+  AWS_ENDPOINT_URL: "${AWS_ENDPOINT_URL}"
+
 x-rasa-credentials: &rasa-credentials
   <<: *rabbitmq-credentials
   <<: *database-credentials
   <<: *redis-credentials
   <<: *duckling-credentials
+  <<: *s3-credentials
   RASA_TOKEN: ${RASA_TOKEN}
   RASA_MODEL_PULL_INTERVAL: 10
   RABBITMQ_QUEUE: "rasa_production_events"
@@ -37,9 +45,10 @@ services:
 
   # Rasa server for infrencing
   rasa-production:
-    container_name: rasa-production 
-    restart: always
-    image: "rasa/rasa:${RASA_VERSION}-full"
+    container_name: rasa-production
+    # restart: always
+    # image: jrtec/rasa-spacy-es
+    image: rasa/rasa:2.8.14
     volumes:
         - ./.config:/app/.config
         - ./models:/app/models
@@ -48,12 +57,12 @@ services:
         - ./domain.yml:/app/domain.yml
         - ./endpoints.yml:/app/endpoints.yml
         - ./data:/app/data
-        - ./actions:/app/actions
     expose:
       - "5005"
     command: >
       run
       --enable-api
+      --model 20211123-030759.tar.gz --remote-storage aws
     depends_on:
       - rabbit
       - redis 
@@ -69,6 +78,14 @@ services:
       - "traefik.http.routers.rasa-production.rule=Host(`rasa.${LOCAL_1}`, `rasa.${LOCAL_2}`, `rasa.${EXT_ENDPOINT1}`, `rasa.${EXT_ENDPOINT2}`, `rasa.${EXT_ENDPOINT3}`)"
       - "traefik.http.services.rasa-production.loadbalancer.server.port=5005"
   
+  action-server:
+    container_name: action-server
+    image: jrtec/rasa-action-server
+    expose:
+      - "5055"
+    volumes:
+      - ./actions:/app/actions
+
   redis:
     container_name: redis
     restart: always
@@ -138,8 +155,6 @@ services:
       - "--providers.docker=true"
     expose:
       - "80"
-    depends_on:      
-      - redis
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
       - "./traefik/traefik.yml:/traefik.yml:ro"
@@ -166,6 +181,3 @@ services:
       - ./nginx-config-files/nginx.conf:/etc/nginx/nginx.conf
       - ./nginx-config-files/app.nginx.template:/etc/nginx/templates/app.nginx.template
       - "${EB_LOG_BASE_DIR:-./nginx-config-files}/nginx-proxy:/var/log/nginx"
-    depends_on:
-      - redis
-    mem_limit: 80m
