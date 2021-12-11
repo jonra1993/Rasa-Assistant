@@ -41,6 +41,7 @@ tracker_store:
     username: "trackerBot" # username used for authentication
     password: "Jasmine2021" # password used for authentication
 
+
 #tracker_store:
 #    type: mongod
 #    url: <url to your mongo instance, e.g. mongodb://localhost:27017>

@@ -110,3 +110,4 @@ db
 auth
 models/*
 credentials
+.rasa
