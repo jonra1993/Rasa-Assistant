@@ -46,6 +46,10 @@ rasa shell
 rasa run --enable-api --cors "*"
 ```
 
+poetry run python myscript.py
+
+poetry run production
+
 ## Extras
 - [Rasa API](https://rasa.com/docs/rasa/pages/http-apihttp:// "Rasa API")
 - [Poetry Manager](https://hackersandslackers.com/python-poetry-package-manager/ "Poetry Manager")

@@ -53,9 +53,9 @@ services:
         - ./.config:/app/.config
         - ./models:/app/models
         - ./config.yml:/app/config.yml
-        - ./credentials.yml:/app/credentials.yml
+        - ./credentials.production.yml:/app/credentials.yml
         - ./domain.yml:/app/domain.yml
-        - ./endpoints.yml:/app/endpoints.yml
+        - ./endpoints.production.yml:/app/endpoints.yml
         - ./data:/app/data
     expose:
       - "5005"
