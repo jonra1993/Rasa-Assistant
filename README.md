@@ -43,12 +43,9 @@ Run on console the following command. It will start project on port 5005
 ```
 poetry shell
 rasa shell
+rasa run actions
 rasa run --enable-api --cors "*"
 ```
-
-poetry run python myscript.py
-
-poetry run production
 
 ## Extras
 - [Rasa API](https://rasa.com/docs/rasa/pages/http-apihttp:// "Rasa API")
