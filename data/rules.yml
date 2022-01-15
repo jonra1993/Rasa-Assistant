@@ -78,3 +78,18 @@ rules:
       - slot_was_set:
           - claim_id: null
       - action: utter_ask_knows_claim_id
+
+  - rule: Ask the user to rephrase whenever they send a message with low NLU confidence
+    steps:
+    - intent: nlu_fallback
+    - action: utter_please_rephrase
+
+  - rule: utter-default-custom
+    steps:
+    - action: action_default_fallback
+    - action: action_listen
+
+  - rule: restart conversation
+    steps:
+    - intent: restart
+    - action: action_restart

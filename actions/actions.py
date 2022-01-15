@@ -874,6 +874,22 @@ class ValidatePayClaimForm(FormValidationAction):
 
         return {"claim_pay_amount": None}
 
+class ActionRestart(Action):
+    """Executes the fallback action and goes back to the previous state
+    of the dialogue"""
+
+    def name(self) -> Text:
+        return "action_restart"
+
+    async def run(
+        self,
+        dispatcher: CollectingDispatcher,
+        tracker: Tracker,
+        domain: Dict[Text, Any],
+    ) -> List[Dict[Text, Any]]:
+        dispatcher.utter_message(response='utter_restart')
+
+        return [Restarted()]
 
 def claims_scroll(curr_page, scroll_status):
     """Performs the query to get claims on the specified page."""

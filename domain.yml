@@ -9,6 +9,8 @@ intents:
     use_entities: true
 - greet:
     use_entities: true
+- restart:
+    use_entities: true
 - goodbye:
     use_entities: true
 - affirm:
@@ -298,7 +300,7 @@ responses:
       title: No
     text: |-
       Is this your current address?
-      {full_address}
+      {full_address}  
   utter_final_quote:
   - text: |-
       Your monthly payment given the information provided is: ${final_quote} per month
@@ -400,9 +402,12 @@ responses:
   - text: Certainly. I can help you update your address. Let's look at the address on file.
   utter_start_new_quote:
   - text: I can help you get a new insurance quote. Let's learn a little more about you.
+  utter_restart:
+  - text: The conversation has been reseted. Let's start from the beginning
 actions:
 - validate_quote_form
 - action_get_quote
+- action_restart
 - action_stop_quote
 - action_claim_status
 - validate_claim_status_form

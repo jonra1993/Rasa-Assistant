@@ -1,5 +1,10 @@
 version: "2.0"
 nlu:
+- intent: restart
+  examples: |
+    - I want to reset conversation
+    - reset conversation
+    - reset bot
 - intent: greet
   examples: |
     - hey

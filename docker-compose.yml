@@ -47,7 +47,6 @@ services:
   rasa-production:
     container_name: rasa-production
     # restart: always
-    # image: jrtec/rasa-spacy-es
     image: rasa/rasa:2.8.14
     volumes:
         - ./.config:/app/.config
